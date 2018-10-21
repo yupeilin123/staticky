@@ -1,0 +1,33 @@
+{
+  "name": "staticky",
+  "version": "0.1.0",
+  "description": "a better and simple static file server",
+  "main": "index.js",
+  "keywords": [
+    "staticky",
+    "public",
+    "eload",
+    "server"
+  ],
+  "bin": "./bin/staticky.js",
+  "author": "yupeilin <yuchacha250@gmail.com>",
+  "license": "MIT",
+  "engines": {
+    "node": ">=7.6"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/yupeilin/staticky.git"
+  },
+  "dependencies": {
+    "chalk": "^2.4.1",
+    "chokidar": "^2.0.4",
+    "commander": "^2.19.0",
+    "koa": "^2.5.3",
+    "koa-compress": "^3.0.0",
+    "koa-serve-list": "^1.0.1",
+    "koa-static": "^5.0.0",
+    "opn": "^5.4.0",
+    "socket.io": "^2.1.1"
+  }
+}
