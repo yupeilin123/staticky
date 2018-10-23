@@ -8,8 +8,10 @@ const chalk = require('chalk');
 const opn = require('opn');
 const chokidar = require('chokidar');
 const socketIo = require('socket.io');
-const { wrapHtml, socketSctipt } = require('./template');
+const showdown = require('showdown');
+const { wrapHtml, socketSctipt, codeStyle } = require('./template');
 
+const converter = new showdown.Converter();
 class staticky {
   static create(options = {}) {
     return Promise.resolve(new staticky(options));
@@ -100,10 +102,18 @@ class staticky {
             val = chunks.replace('</head>', body => {
               return socketSctipt + body;
             });
+          } else if (ctx.type === 'text/markdown') {
+            const conversionHtml = converter.makeHtml(chunks);
+            const markdownHtml = `<div style="position:absolute;top:0;left:0;right:0;bottom:0;">
+              <div style="padding:2em calc(50% - 457px)">${conversionHtml}</div>
+            </div>`
+            val = wrapHtml.replace('</body>', body => {
+              return markdownHtml + body;
+            }).replace('</head>', body => {
+              return codeStyle + body;
+            })
           } else {
-            val = wrapHtml.replace('</head>', body => {
-              return socketSctipt + body;
-            }).replace('</body>', body => {
+            val = wrapHtml.replace('</body>', body => {
               return `<pre style="word-wrap: break-word; white-space: pre-wrap;">${chunks}</pre>` + body;
             });
           }
