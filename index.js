@@ -31,17 +31,18 @@ class staticky {
       ctx.set('Access-Control-Allow-Origin', '*');
       await next();
     });
-    this.app.use(this.onReload());
+    // enable compress
+    if (openGizp) {
+      this.openGizp();
+    }
+    // liver Reload
+    this.app.use(this.reloading());
     this.app.use(serveStatic(rootDir, {
       index: targetFile
     }));
     this.app.use(serveList(rootDir, {
       'icons': true
     }));
-    // enable compress
-    if (openGizp) {
-      this.openGizp();
-    }
     const server = http.createServer(this.app.callback());
     // start http server
     this.listen(server, {
@@ -76,6 +77,9 @@ class staticky {
   // use koa-compress to start gzip
   openGizp() {
     this.app.use(compress({
+      filter: function (contentType) {
+        return /^text/.test(contentType)
+      },
       threshold: 2024,
       flush: require('zlib').Z_SYNC_FLUSH
     }));
@@ -88,11 +92,11 @@ class staticky {
     opn(`http://localhost:${port}/`);
   }
   // inject html or script to ctx.body
-  onReload() {
+  reloading() {
     return async (ctx, next) => {
       let chunks = '';
       await next();
-      if (ctx.type !== 'application/pdf') {
+      if (this.isContentTypeRight(ctx.type)) {
         const injectHtml = await new Promise((resolve) => {
           ctx.body.on('data', chunk => {
             chunks += chunk;
@@ -123,6 +127,15 @@ class staticky {
         ctx.body = injectHtml;
       }
     }
+  }
+  /**
+   * 
+   * @param {String} contentType
+   * @returns {Boolean}
+   */
+  isContentTypeRight(contentType) {
+    const otherType = ['application/javascript', 'application/ecmascript', 'application/json'];
+    return /^text/.test(contentType) || otherType.some(_ => _ === contentType);
   }
   /**
   * @return {string} ip
