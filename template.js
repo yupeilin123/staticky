@@ -46,5 +46,8 @@ module.exports = {
       padding: 0;
       line-height: 21px;
     }
-  </style>`
+  </style>`,
+  markdownWrapDiv: `<div style="position:absolute;top:0;left:0;right:0;bottom:0;">
+    <div style="padding:2em calc(50% - 457px)">markdown</div>
+  </div>`
 }

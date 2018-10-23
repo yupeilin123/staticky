@@ -1,6 +1,6 @@
 {
   "name": "staticky",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "a better and simple static file server",
   "main": "index.js",
   "keywords": [

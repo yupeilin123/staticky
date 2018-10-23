@@ -9,7 +9,7 @@ const opn = require('opn');
 const chokidar = require('chokidar');
 const socketIo = require('socket.io');
 const showdown = require('showdown');
-const { wrapHtml, socketSctipt, codeStyle } = require('./template');
+const { wrapHtml, socketSctipt, codeStyle, markdownWrapDiv } = require('./template');
 
 const converter = new showdown.Converter();
 class staticky {
@@ -92,36 +92,36 @@ class staticky {
     return async (ctx, next) => {
       let chunks = '';
       await next();
-      const injectHtml = await new Promise((resolve) => {
-        ctx.body.on('data', chunk => {
-          chunks += chunk;
-        });
-        ctx.body.on('end', () => {
-          let val;
-          if (ctx.type === 'text/html') {
-            val = chunks.replace('</head>', body => {
-              return socketSctipt + body;
-            });
-          } else if (ctx.type === 'text/markdown') {
-            const conversionHtml = converter.makeHtml(chunks);
-            const markdownHtml = `<div style="position:absolute;top:0;left:0;right:0;bottom:0;">
-              <div style="padding:2em calc(50% - 457px)">${conversionHtml}</div>
-            </div>`
-            val = wrapHtml.replace('</body>', body => {
-              return markdownHtml + body;
-            }).replace('</head>', body => {
-              return codeStyle + body;
-            })
-          } else {
-            val = wrapHtml.replace('</body>', body => {
-              return `<pre style="word-wrap: break-word; white-space: pre-wrap;">${chunks}</pre>` + body;
-            });
-          }
-          resolve(val);
+      if (ctx.type !== 'application/pdf') {
+        const injectHtml = await new Promise((resolve) => {
+          ctx.body.on('data', chunk => {
+            chunks += chunk;
+          });
+          ctx.body.on('end', () => {
+            let val;
+            if (ctx.type === 'text/html') {
+              val = chunks.replace('</head>', body => {
+                return socketSctipt + body;
+              });
+            } else if (ctx.type === 'text/markdown') {
+              const conversionHtml = converter.makeHtml(chunks);
+              const markdownHtml = markdownWrapDiv.replace('markdown', conversionHtml);
+              val = wrapHtml.replace('</body>', body => {
+                return markdownHtml + body;
+              }).replace('</head>', body => {
+                return codeStyle + body;
+              })
+            } else {
+              val = wrapHtml.replace('</body>', body => {
+                return `<pre style="word-wrap: break-word; white-space: pre-wrap;">${chunks}</pre>` + body;
+              });
+            }
+            resolve(val);
+          })
         })
-      })
-      ctx.set('Content-Type', 'text/html; charset=utf-8');
-      ctx.body = injectHtml;
+        ctx.set('Content-Type', 'text/html; charset=utf-8');
+        ctx.body = injectHtml;
+      }
     }
   }
   /**
