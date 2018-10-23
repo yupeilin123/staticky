@@ -30,7 +30,7 @@ Command line parameters:
 * `-r` or `--reload` File or directory live reloaded, defauls to `target file` , you can only select `target` or `dir`
 * `-h` or `--help` Output usage information
 
-notice: live reloaded don't support pdf.
+**notice**: live reloaded only support text/* and application/javascript, application/ecmascript, application/json.
 
 ## Examples
 
