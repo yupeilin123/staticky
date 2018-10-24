@@ -1,6 +1,6 @@
-# staticky
+English | [简历中文](./README.zh-CN.md)
 
-[中文指南](https://yupeilin123.github.io/2018/10/21/staticky/)
+# staticky
 
 staticky is a better and simple static file server.You can use it and you can see static files on your cell phone and computer so easily.And when the file changes, it can automatically refresh the browser.
 
