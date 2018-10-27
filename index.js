@@ -9,7 +9,7 @@ const opn = require('opn');
 const chokidar = require('chokidar');
 const socketIo = require('socket.io');
 const showdown = require('showdown');
-const { wrapHtml, socketSctipt, codeStyle, markdownWrapDiv } = require('./template');
+const { statickyWrapHtml, socketIoSctipt, markdownLink, markdownWrapDiv } = require('./template');
 
 const converter = new showdown.Converter();
 class staticky {
@@ -66,8 +66,8 @@ class staticky {
    */
   listen(server, { port, openBrowser, ipAddress }) {
     server.listen(port, () => {
-      console.log(chalk.green.reset(`Local:           http://localhost:${port}/`));
-      console.log(chalk.green.reset(`On Your NetWork: http://${ipAddress}:${port}/`));
+      console.log(chalk.bold.greenBright(`Local:           http://localhost:${port}/`));
+      console.log(chalk.bold.greenBright(`On Your NetWork: http://${ipAddress}:${port}/`));
       // open Browser
       if (openBrowser) {
         this.openBrowser(port);
@@ -105,18 +105,18 @@ class staticky {
             let val;
             if (ctx.type === 'text/html') {
               val = chunks.replace('</head>', body => {
-                return socketSctipt + body;
+                return socketIoSctipt + body;
               });
             } else if (ctx.type === 'text/markdown') {
               const conversionHtml = converter.makeHtml(chunks);
               const markdownHtml = markdownWrapDiv.replace('markdown', conversionHtml);
-              val = wrapHtml.replace('</body>', body => {
-                return markdownHtml + body;
+              val = statickyWrapHtml.replace('</body>', body => {
+                return `<article class="markdown-body">${markdownHtml}</article>` + body;
               }).replace('</head>', body => {
-                return codeStyle + body;
+                return markdownLink + body;
               })
             } else {
-              val = wrapHtml.replace('</body>', body => {
+              val = statickyWrapHtml.replace('</body>', body => {
                 return `<pre style="word-wrap: break-word; white-space: pre-wrap;">${chunks}</pre>` + body;
               });
             }
