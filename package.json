@@ -1,13 +1,13 @@
 {
   "name": "staticky",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "a better and simple static file server",
   "main": "index.js",
   "keywords": [
-    "staticky",
-    "public",
-    "eload",
-    "server"
+    "static",
+    "reload",
+    "server",
+    "staticky"
   ],
   "bin": "./bin/staticky.js",
   "author": "yupeilin <yuchacha250@gmail.com>",

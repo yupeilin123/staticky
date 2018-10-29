@@ -9,7 +9,7 @@ const opn = require('opn');
 const chokidar = require('chokidar');
 const socketIo = require('socket.io');
 const showdown = require('showdown');
-const { statickyWrapHtml, socketIoSctipt, markdownLink, markdownCss } = require('./template');
+const { statickyWrapHtml, socketIoSctipt, githubMarkDownCss } = require('./template');
 
 const converter = new showdown.Converter();
 class Staticky {
@@ -117,7 +117,7 @@ class Staticky {
               val = statickyWrapHtml.replace('</body>', body => {
                 return `<article class="markdown-body">${markdownHtml}</article>` + body;
               }).replace('</head>', body => {
-                return markdownLink + markdownCss + body;
+                return githubMarkDownCss + body;
               });
             }
             resolve(val);

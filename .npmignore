@@ -1,0 +1,11 @@
+# repeats from .gitignore
+node_modules/
+.vscode/
+package-lock.json
+
+# other
+.editorconfig
+.gitignore
+README.md
+README.zh-CN.md
+LICENSE

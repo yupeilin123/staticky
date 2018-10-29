@@ -1,12 +1,27 @@
+const githubMarkDownCss = require('./github-markdown-css');
+
 module.exports = {
   statickyWrapHtml: `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>staticky</title>
-  <script src="/socket.io/socket.io.js"></script>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>staticky</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      var _$_socket = io({
+        transports: ['websocket','polling']
+      });
+      _$_socket.on('reload',() => {
+        window.location.reload();
+      });
+    </script>
+  </head>
+  <body>
+  </body>
+  </html>`,
+  socketIoSctipt: `<script src="/socket.io/socket.io.js"></script>
   <script>
     var _$_socket = io({
       transports: ['websocket','polling']
@@ -14,22 +29,8 @@ module.exports = {
     _$_socket.on('reload',() => {
       window.location.reload();
     });
-  </script>
-</head>
-<body>
-</body>
-</html>`,
-  socketIoSctipt: `  <script src="/socket.io/socket.io.js"></script>
-  <script>
-    var _$_socket = io({
-      transports: ['websocket','polling']
-    });
-    _$_socket.on('reload',() => {
-      window.location.reload();
-    });
-  </script> `,
-  markdownLink: '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.10.0/github-markdown.min.css" />',
-  markdownCss: `<style>
+  </script>`,
+  githubMarkDownCss: `<style>${githubMarkDownCss}
     .markdown-body {
       box-sizing: border-box;
       min-width: 200px;
