@@ -2,6 +2,11 @@ English | [简体中文](./README.zh-CN.md)
 
 # staticky
 
+[![NPM version](https://img.shields.io/npm/v/staticky.svg?style=flat-square)](https://www.npmjs.com/package/staticky)
+[![node version](https://img.shields.io/badge/node.js-%3E=_7.6-green.svg?style=flat-square)](http://nodejs.org/download/)
+[![Dependency Status](https://img.shields.io/david/yupeilin123/staticky.svg)](https://david-dm.org/yupeilin123/staticky)
+[![Downloads](https://img.shields.io/npm/dm/staticky.svg)](https://www.npmjs.com/package/staticky)
+
 staticky is a better and simple static file server.You can use it and you can see static files on your cell phone and computer so easily.And when the file changes, it can automatically refresh the browser.
 
 ## How to use 

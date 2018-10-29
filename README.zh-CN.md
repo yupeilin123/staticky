@@ -1,4 +1,11 @@
+[English](./README.md) | 简体中文
+
 # staticky
+
+[![NPM version](https://img.shields.io/npm/v/staticky.svg?style=flat-square)](https://www.npmjs.com/package/staticky)
+[![node version](https://img.shields.io/badge/node.js-%3E=_7.6-green.svg?style=flat-square)](http://nodejs.org/download/)
+[![Dependency Status](https://img.shields.io/david/yupeilin123/staticky.svg)](https://david-dm.org/yupeilin123/staticky)
+[![Downloads](https://img.shields.io/npm/dm/staticky.svg)](https://www.npmjs.com/package/staticky)
 
 staticky 是一个更好的、更简单的静态文件服务器。你能使用它然后可以在电脑或手机上查看静态文件。并且当文件变动时能自动刷新浏览器显示最新的文件内容。
 
