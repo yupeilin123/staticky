@@ -9,7 +9,7 @@ const opn = require('opn');
 const chokidar = require('chokidar');
 const socketIo = require('socket.io');
 const showdown = require('showdown');
-const { statickyWrapHtml, socketIoSctipt, markdownLink, markdownWrapDiv } = require('./template');
+const { statickyWrapHtml, socketIoSctipt, markdownLink, markdownCss } = require('./template');
 
 const converter = new showdown.Converter();
 class Staticky {
@@ -45,7 +45,7 @@ class Staticky {
     }));
     const server = http.createServer(this.app.callback());
     // start io connect httpServer
-    const io = socketIo.listen(server,{
+    const io = socketIo.listen(server, {
       // transports: ['websocket']
     });
     // start http server
@@ -110,13 +110,12 @@ class Staticky {
                 return socketIoSctipt + body;
               });
             } else if (ctx.type === 'text/markdown') {
-              const conversionHtml = converter.makeHtml(chunks);
-              const markdownHtml = markdownWrapDiv.replace('markdown', conversionHtml);
+              const markdownHtml = converter.makeHtml(chunks);
               val = statickyWrapHtml.replace('</body>', body => {
                 return `<article class="markdown-body">${markdownHtml}</article>` + body;
               }).replace('</head>', body => {
-                return markdownLink + body;
-              })
+                return markdownLink + markdownCss + body;
+              });
             } else {
               val = statickyWrapHtml.replace('</body>', body => {
                 return `<pre style="word-wrap: break-word; white-space: pre-wrap;">${chunks}</pre>` + body;
