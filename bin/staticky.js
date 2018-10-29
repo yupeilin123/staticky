@@ -4,7 +4,7 @@ const program = require('commander');
 const fs = require('fs');
 const path = require('path');
 const StatickyError = require('../Errors');
-const staticky = require('..');
+const Staticky = require('..');
 
 const convert = {
   port: function (num) {
@@ -25,7 +25,7 @@ const convert = {
 };
 
 program
-  .version('0.1.0', '-v, --version')
+  .version('0.2.2', '-v, --version')
   .option('-p, --port <port>', 'server\'s listen port, 8091 default', convert.port)
   .option('-n, --no-browser', 'don\'t open browser, default open browser')
   .option('-t, --target <file>', 'which the file open', 'index.html')
@@ -48,7 +48,7 @@ fs.stat(rootDir, (err, stats) => {
       targetFile: program.target,
       reload: (program.reload === process.cwd() || program.reload === program.target) ? program.reload : program.target,
     };
-    staticky.create(option);
+    Staticky.create(option);
   } else {
     throw new StatickyError('dir is not directory')
   }

@@ -12,9 +12,9 @@ const showdown = require('showdown');
 const { statickyWrapHtml, socketIoSctipt, markdownLink, markdownWrapDiv } = require('./template');
 
 const converter = new showdown.Converter();
-class staticky {
+class Staticky {
   static create(options = {}) {
-    return Promise.resolve(new staticky(options));
+    return Promise.resolve(new Staticky(options));
   }
   constructor(options) {
     const {
@@ -44,14 +44,16 @@ class staticky {
       'icons': true
     }));
     const server = http.createServer(this.app.callback());
+    // start io connect httpServer
+    const io = socketIo.listen(server,{
+      // transports: ['websocket']
+    });
     // start http server
     this.listen(server, {
       port,
       openBrowser,
       ipAddress
     });
-    // start io connect httpServer
-    const io = socketIo.listen(server);
     // watch file or dir
     chokidar.watch(reload, {
       ignored: /node_modules/
@@ -155,4 +157,4 @@ class staticky {
   }
 }
 
-module.exports = staticky;
+module.exports = Staticky;
