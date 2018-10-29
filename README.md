@@ -6,7 +6,7 @@ staticky is a better and simple static file server.You can use it and you can se
 
 ## How to use 
 
-First you use this command `npm install staticky -g` ,
+First use this command `npm install staticky -g` ,
 
 then in your project's directory, you can use `staticky` ,
 
@@ -30,7 +30,7 @@ Command line parameters:
 * `-r` or `--reload` File or directory live reloaded, defauls to `target file` , you can only select `target` or `dir`
 * `-h` or `--help` Output usage information
 
-**notice**: live reloaded only support text/* and application/javascript, application/ecmascript, application/json.
+**notice**: live reloaded only support text/html or text/markdown.
 
 ## Examples
 

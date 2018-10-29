@@ -93,7 +93,10 @@ class Staticky {
   openBrowser(port) {
     opn(`http://localhost:${port}/`);
   }
-  // inject html or script to ctx.body
+  /**
+   * if file type is html or markdown
+   * inject script or html
+   */
   reloading() {
     return async (ctx, next) => {
       let chunks = '';
@@ -104,7 +107,7 @@ class Staticky {
             chunks += chunk;
           });
           ctx.body.on('end', () => {
-            let val;
+            let val = chunks;
             if (ctx.type === 'text/html') {
               val = chunks.replace('</head>', body => {
                 return socketIoSctipt + body;
@@ -115,10 +118,6 @@ class Staticky {
                 return `<article class="markdown-body">${markdownHtml}</article>` + body;
               }).replace('</head>', body => {
                 return markdownLink + markdownCss + body;
-              });
-            } else {
-              val = statickyWrapHtml.replace('</body>', body => {
-                return `<pre style="word-wrap: break-word; white-space: pre-wrap;">${chunks}</pre>` + body;
               });
             }
             resolve(val);
@@ -135,8 +134,7 @@ class Staticky {
    * @returns {Boolean}
    */
   isContentTypeRight(contentType) {
-    const otherType = ['application/javascript', 'application/ecmascript', 'application/json'];
-    return /^text/.test(contentType) || otherType.some(_ => _ === contentType);
+    return contentType === 'text/html' || contentType === 'text/markdown';
   }
   /**
   * @return {string} ip

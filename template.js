@@ -8,10 +8,10 @@ module.exports = {
   <title>staticky</title>
   <script src="/socket.io/socket.io.js"></script>
   <script>
-    var socket = io({
+    var _$_socket = io({
       transports: ['websocket','polling']
     });
-    socket.on('reload',() => {
+    _$_socket.on('reload',() => {
       window.location.reload();
     });
   </script>
@@ -21,10 +21,10 @@ module.exports = {
 </html>`,
   socketIoSctipt: `  <script src="/socket.io/socket.io.js"></script>
   <script>
-    var socket = io({
+    var _$_socket = io({
       transports: ['websocket','polling']
     });
-    socket.on('reload',() => {
+    _$_socket.on('reload',() => {
       window.location.reload();
     });
   </script> `,
