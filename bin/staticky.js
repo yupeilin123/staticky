@@ -13,25 +13,16 @@ const convert = {
   dir: function (workPath) {
     return path.resolve(process.cwd(), workPath);
   },
-  reload: function (reloadFile) {
-    if (reloadFile === 'target') {
-      return program.target;
-    } else if (reloadFile === 'dir') {
-      return process.cwd();
-    } else {
-      throw new StatickyError('reload <file|dir> is between target and dir');
-    }
-  }
 };
 
 program
-  .version('0.2.2', '-v, --version')
+  .version('0.2.5', '-v, --version')
   .option('-p, --port <port>', 'server\'s listen port, 8091 default', convert.port)
   .option('-n, --no-browser', 'don\'t open browser, default open browser')
   .option('-t, --target <file>', 'which the file open', 'index.html')
   .option('-d, --dir <path>', 'working dir, default process.cwd()', convert.dir)
   .option('-g, --gzip', 'the request accepts gzip encoding')
-  .option('-r, --reload <file|dir>', 'file or dir live reloaded, target file default', convert.reload)
+  .option('--no-reload', 'live reloaded, default opened，watching process.cwd()')
   .parse(process.argv);
 
 const rootDir = program.dir || process.cwd();
@@ -46,7 +37,7 @@ fs.stat(rootDir, (err, stats) => {
       rootDir: rootDir,
       openGizp: program.gzip || false,
       targetFile: program.target,
-      reload: (program.reload === process.cwd() || program.reload === program.target) ? program.reload : program.target,
+      openReload: program.reload
     };
     Staticky.create(option);
   } else {

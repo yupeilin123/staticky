@@ -1,5 +1,7 @@
 const http = require('http');
 const os = require('os');
+const path = require('path');
+const fs = require('fs');
 const Koa = require('koa');
 const compress = require('koa-compress');
 const serveStatic = require('koa-static');
@@ -23,7 +25,7 @@ class Staticky {
       rootDir,
       openGizp,
       targetFile,
-      reload,
+      openReload,
       ipAddress = this.getIPAddress()
     } = options;
     this.app = new Koa();
@@ -35,8 +37,12 @@ class Staticky {
     if (openGizp) {
       this.openGizp();
     }
+    // judge resoure existent
+    this.app.use(this.resoureExistence(rootDir));
     // liver Reload
-    this.app.use(this.reloading());
+    if (openReload) {
+      this.app.use(this.reloading());
+    }
     this.app.use(serveStatic(rootDir, {
       index: targetFile
     }));
@@ -44,22 +50,25 @@ class Staticky {
       'icons': true
     }));
     const server = http.createServer(this.app.callback());
-    // start io connect httpServer
-    const io = socketIo.listen(server, {
-      // transports: ['websocket']
-    });
+
     // start http server
     this.listen(server, {
       port,
       openBrowser,
       ipAddress
     });
-    // watch file or dir
-    chokidar.watch(reload, {
-      ignored: /node_modules/
-    }).on('change', () => {
-      io.emit('reload');
-    });
+    if (openReload) {
+      // start io connect httpServer
+      const io = socketIo.listen(server);
+      // watch file or dir
+      chokidar.watch(process.cwd(), {
+        ignored: /node_modules/
+      }).on('change', () => {
+        io.emit('reload');
+      }).on('unlink', () => {
+        io.emit('reload');
+      });
+    }
   }
   /**
    * 
@@ -92,6 +101,25 @@ class Staticky {
    */
   openBrowser(port) {
     opn(`http://localhost:${port}/`);
+  }
+  // resoure not Found status 404
+  resoureExistence(rootDir) {
+    return async (ctx, next) => {
+      const fsExist = await new Promise((resolve) => {
+        fs.stat(path.join(rootDir, ctx.url), (err) => {
+          if (err) {
+            resolve(false);
+          } else {
+            resolve(true);
+          }
+        })
+      })
+      if (fsExist) {
+        await next();
+      } else {
+        ctx.status = 404;
+      }
+    }
   }
   /**
    * if file type is html or markdown
