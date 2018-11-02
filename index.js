@@ -44,7 +44,7 @@ class Staticky {
       this.app.use(this.reloading());
     }
     this.app.use(serveStatic(rootDir, {
-      index: targetFile
+      index: targetFile,
     }));
     this.app.use(serveList(rootDir, {
       'icons': true
@@ -106,7 +106,7 @@ class Staticky {
   resoureExistence(rootDir) {
     return async (ctx, next) => {
       const fsExist = await new Promise((resolve) => {
-        fs.stat(path.join(rootDir, ctx.url), (err) => {
+        fs.stat(path.join(rootDir, ctx.path), (err) => {
           if (err) {
             resolve(false);
           } else {
