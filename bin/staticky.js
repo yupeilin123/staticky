@@ -16,7 +16,7 @@ const convert = {
 };
 
 program
-  .version('0.2.5', '-v, --version')
+  .version('0.3.1', '-v, --version')
   .option('-p, --port <port>', 'server\'s listen port, 8091 default', convert.port)
   .option('-n, --no-browser', 'don\'t open browser, default open browser')
   .option('-t, --target <file>', 'which the file open', 'index.html')
