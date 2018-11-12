@@ -2,13 +2,13 @@ const http = require('http');
 const os = require('os');
 const Koa = require('koa');
 const compress = require('koa-compress');
+const serveStatic = require('koa-static');
 const serveList = require('koa-serve-list');
 const chalk = require('chalk');
 const opn = require('opn');
 const chokidar = require('chokidar');
 const socketIo = require('socket.io');
 const showdown = require('showdown');
-const serveStatic = require('./serveStatic');
 const { statickyWrapHtml, socketIoSctipt, githubMarkDownCss } = require('./template');
 
 const converter = new showdown.Converter();
@@ -40,8 +40,8 @@ class Staticky {
       this.app.use(this.reloading());
     }
     this.app.use(serveStatic(rootDir, {
-      index: [targetFile]
-    }))
+      index: targetFile
+    }));
     this.app.use(serveList(rootDir, {
       'icons': true
     }));
