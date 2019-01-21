@@ -12,11 +12,11 @@ const convert = {
   },
   dir: function (workPath) {
     return path.resolve(process.cwd(), workPath);
-  },
+  }
 };
 
 program
-  .version('0.3.1', '-v, --version')
+  .version('0.3.2', '-v, --version')
   .option('-p, --port <port>', 'server\'s listen port, 8091 default', convert.port)
   .option('-n, --no-browser', 'don\'t open browser, default open browser')
   .option('-t, --target <file>', 'which the file open', 'index.html')
@@ -29,7 +29,7 @@ const rootDir = program.dir || process.cwd();
 
 // judge dir is Directory
 fs.stat(rootDir, (err, stats) => {
-  if (err) throw new StatickyError(err)
+  if (err) throw new StatickyError(err);
   if (stats.isDirectory()) {
     const option = {
       port: program.port || 8091,
@@ -41,6 +41,6 @@ fs.stat(rootDir, (err, stats) => {
     };
     Staticky.create(option);
   } else {
-    throw new StatickyError('dir is not directory')
+    throw new StatickyError('dir is not directory');
   }
-})
+});

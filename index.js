@@ -1,4 +1,6 @@
 const http = require('http');
+const path = require('path');
+const fs = require('fs');
 const os = require('os');
 const Koa = require('koa');
 const compress = require('koa-compress');
@@ -37,7 +39,7 @@ class Staticky {
     }
     // liver Reload
     if (openReload) {
-      this.app.use(this.reloading());
+      this.app.use(this.reloading(rootDir));
     }
     this.app.use(serveStatic(rootDir, {
       index: targetFile
@@ -85,7 +87,7 @@ class Staticky {
   openGizp() {
     this.app.use(compress({
       filter: function (contentType) {
-        return /^text/.test(contentType)
+        return /^text/.test(contentType);
       },
       threshold: 2024,
       flush: require('zlib').Z_SYNC_FLUSH
@@ -102,36 +104,52 @@ class Staticky {
    * if file type is html or markdown
    * inject script or html
    */
-  reloading() {
+  reloading(rootDir) {
     return async (ctx, next) => {
       let chunks = '';
+      let notExitFile = false;
       await next();
-      if (this.isContentTypeRight(ctx.type)) {
-        const injectHtml = await new Promise((resolve) => {
-          ctx.body.on('data', chunk => {
-            chunks += chunk;
-          });
-          ctx.body.on('end', () => {
-            let val = chunks;
-            if (ctx.type === 'text/html') {
-              val = chunks.replace('</head>', body => {
-                return socketIoSctipt + body;
-              });
-            } else if (ctx.type === 'text/markdown') {
-              const markdownHtml = converter.makeHtml(chunks);
-              val = statickyWrapHtml.replace('</body>', body => {
-                return `<article class="markdown-body">${markdownHtml}</article>` + body;
-              }).replace('</head>', body => {
-                return githubMarkDownCss + body;
-              });
-            }
-            resolve(val);
-          })
-        })
-        ctx.set('Content-Type', 'text/html; charset=utf-8');
-        ctx.body = injectHtml;
+      try {
+        const stat = fs.statSync(path.join(rootDir, ctx.path));
+        if (stat.isDirectory()) {
+          notExitFile = true;
+        }
+      } catch (err) {
+        if (err && err.code === 'ENOENT') {
+          notExitFile = true;
+        }
       }
-    }
+      if (notExitFile) {
+        ctx.status = 404;
+        ctx.body = 'sorry, this is a problem';
+      } else {
+        if (this.isContentTypeRight(ctx.type)) {
+          const injectHtml = await new Promise(resolve => {
+            ctx.body.on('data', chunk => {
+              chunks += chunk;
+            });
+            ctx.body.on('end', () => {
+              let val = chunks;
+              if (ctx.type === 'text/html') {
+                val = chunks.replace('</head>', body => {
+                  return socketIoSctipt + body;
+                });
+              } else if (ctx.type === 'text/markdown') {
+                const markdownHtml = converter.makeHtml(chunks);
+                val = statickyWrapHtml.replace('</body>', body => {
+                  return `<article class="markdown-body">${markdownHtml}</article>` + body;
+                }).replace('</head>', body => {
+                  return githubMarkDownCss + body;
+                });
+              }
+              resolve(val);
+            });
+          });
+          ctx.set('Content-Type', 'text/html; charset=utf-8');
+          ctx.body = injectHtml;
+        }
+      }
+    };
   }
   /**
    * 
@@ -153,7 +171,7 @@ class Staticky {
           ip = detail.address;
           return;
         }
-      })
+      });
     }
     return ip || '127.0.0.1';
   }
