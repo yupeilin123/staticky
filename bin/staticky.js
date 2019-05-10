@@ -22,7 +22,7 @@ program
   .option('-t, --target <file>', 'which the file open', 'index.html')
   .option('-d, --dir <path>', 'working dir, default process.cwd()', convert.dir)
   .option('-g, --gzip', 'the request accepts gzip encoding')
-  .option('--no-reload', 'live reloaded, default opened，watching process.cwd()')
+  .option('--no-reload', 'live reloaded, default opened, watching process.cwd()')
   .parse(process.argv);
 
 const rootDir = program.dir || process.cwd();
