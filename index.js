@@ -7,7 +7,7 @@ const compress = require('koa-compress');
 const serveStatic = require('koa-static');
 const serveList = require('koa-serve-list');
 const chalk = require('chalk');
-const opn = require('opn');
+const open = require('open');
 const chokidar = require('chokidar');
 const socketIo = require('socket.io');
 const showdown = require('showdown');
@@ -16,7 +16,7 @@ const { statickyWrapHtml, socketIoSctipt, githubMarkDownCss } = require('./templ
 const converter = new showdown.Converter();
 class Staticky {
   static create(options = {}) {
-    return Promise.resolve(new Staticky(options));
+    return new Staticky(options);
   }
   constructor(options) {
     const {
@@ -42,7 +42,8 @@ class Staticky {
       this.app.use(this.reloading(rootDir));
     }
     this.app.use(serveStatic(rootDir, {
-      index: targetFile
+      index: targetFile,
+      extensions: true
     }));
     this.app.use(serveList(rootDir, {
       'icons': true
@@ -98,7 +99,7 @@ class Staticky {
    * @param {string} port 
    */
   openBrowser(port) {
-    opn(`http://localhost:${port}/`);
+    open(`http://localhost:${port}/`);
   }
   /**
    * if file type is html or markdown
@@ -107,47 +108,37 @@ class Staticky {
   reloading(rootDir) {
     return async (ctx, next) => {
       let chunks = '';
-      let notExitFile = false;
-      await next();
+      const filePath = path.join(rootDir, ctx.path);
       try {
-        const stat = fs.statSync(path.join(rootDir, ctx.path));
-        if (stat.isDirectory()) {
-          notExitFile = true;
-        }
+        fs.accessSync(filePath, fs.constants.F_OK);
       } catch (err) {
-        if (err && err.code === 'ENOENT') {
-          notExitFile = true;
-        }
+        ctx.throw(404, 'not Found');
       }
-      if (notExitFile) {
-        ctx.status = 404;
-        ctx.body = 'sorry, this is a problem';
-      } else {
-        if (this.isContentTypeRight(ctx.type)) {
-          const injectHtml = await new Promise(resolve => {
-            ctx.body.on('data', chunk => {
-              chunks += chunk;
-            });
-            ctx.body.on('end', () => {
-              let val = chunks;
-              if (ctx.type === 'text/html') {
-                val = chunks.replace('</head>', body => {
-                  return socketIoSctipt + body;
-                });
-              } else if (ctx.type === 'text/markdown') {
-                const markdownHtml = converter.makeHtml(chunks);
-                val = statickyWrapHtml.replace('</body>', body => {
-                  return `<article class="markdown-body">${markdownHtml}</article>` + body;
-                }).replace('</head>', body => {
-                  return githubMarkDownCss + body;
-                });
-              }
-              resolve(val);
-            });
+      await next();
+      if (this.isContentTypeRight(ctx.type)) {
+        const injectHtml = await new Promise(resolve => {
+          ctx.body.on('data', chunk => {
+            chunks += chunk;
           });
-          ctx.set('Content-Type', 'text/html; charset=utf-8');
-          ctx.body = injectHtml;
-        }
+          ctx.body.on('end', () => {
+            let val = chunks;
+            if (ctx.type === 'text/html') {
+              val = chunks.replace('</head>', body => {
+                return socketIoSctipt + body;
+              });
+            } else if (ctx.type === 'text/markdown') {
+              const markdownHtml = converter.makeHtml(chunks);
+              val = statickyWrapHtml.replace('</body>', body => {
+                return `<article class="markdown-body">${markdownHtml}</article>` + body;
+              }).replace('</head>', body => {
+                return githubMarkDownCss + body;
+              });
+            }
+            resolve(val);
+          });
+        });
+        ctx.set('Content-Type', 'text/html; charset=utf-8');
+        ctx.body = injectHtml;
       }
     };
   }
