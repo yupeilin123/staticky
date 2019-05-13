@@ -112,7 +112,17 @@ class Staticky {
       try {
         fs.accessSync(filePath, fs.constants.F_OK);
       } catch (err) {
-        ctx.throw(404, 'not Found');
+        if (ctx.header.referer) {
+          const baseUrl = ctx.header.referer.slice(0, ctx.header.referer.lastIndexOf('/'));
+          ctx.url = baseUrl + ctx.url;
+          try {
+            fs.accessSync(path.join(rootDir + ctx.path));
+          } catch (err) {
+            ctx.throw(404, 'not Found');
+          }
+        } else {
+          ctx.throw(404, 'not Found');
+        }
       }
       await next();
       if (this.isContentTypeRight(ctx.type)) {
