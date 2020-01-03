@@ -1,6 +1,6 @@
 {
   "name": "staticky",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "a better and simple static file server",
   "main": "index.js",
   "keywords": [
@@ -22,19 +22,19 @@
   },
   "homepage": "https://github.com/yupeilin123/staticky",
   "dependencies": {
-    "chalk": "^2.4.2",
-    "chokidar": "^2.1.4",
-    "commander": "^2.19.0",
+    "chalk": "^3.0.0",
+    "chokidar": "^3.3.1",
+    "commander": "^4.0.1",
     "koa": "^2.6.2",
     "koa-compress": "^3.0.0",
     "koa-serve-list": "^1.0.1",
     "koa-static": "^5.0.0",
-    "open": "^6.0.0",
+    "open": "^7.0.0",
     "serve-static": "^1.13.2",
     "showdown": "^1.9.0",
     "socket.io": "^2.2.0"
   },
   "devDependencies": {
-    "eslint": "^5.12.1"
+    "eslint": "^6.8.0"
   }
 }
