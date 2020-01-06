@@ -6,6 +6,8 @@ package-lock.json
 # other
 .editorconfig
 .gitignore
+.eslintrc.js
+.eslintignore
 README.md
 README.zh-CN.md
 LICENSE

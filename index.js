@@ -49,18 +49,16 @@ class Staticky {
       'icons': true
     }));
     const server = http.createServer(this.app.callback());
-
     // start http server
     this.listen(server, {
       port,
-      openBrowser,
       ipAddress
     });
     if (openReload) {
       // start io connect httpServer
       const io = socketIo.listen(server);
       // watch file or dir
-      chokidar.watch(process.cwd(), {
+      chokidar.watch(rootDir, {
         ignored: /node_modules/
       }).on('change', () => {
         io.emit('reload');
@@ -68,20 +66,20 @@ class Staticky {
         io.emit('reload');
       });
     }
+    // open Browser
+    if (openBrowser) {
+      this.openBrowser(port);
+    }
   }
   /**
    * 
    * @param {httpServer} server 
    * @param {String<port>, Boolean<openBrowser>, String<ipAddress>} options
    */
-  listen(server, { port, openBrowser, ipAddress }) {
+  listen(server, { port, ipAddress }) {
     server.listen(port, () => {
       console.log(chalk.bold.greenBright(`Local:           http://localhost:${port}/`));
       console.log(chalk.bold.greenBright(`On Your NetWork: http://${ipAddress}:${port}/`));
-      // open Browser
-      if (openBrowser) {
-        this.openBrowser(port);
-      }
     });
   }
   // use koa-compress to start gzip
@@ -113,8 +111,7 @@ class Staticky {
         fs.accessSync(filePath, fs.constants.F_OK);
       } catch (err) {
         if (ctx.header.referer) {
-          const baseUrl = ctx.header.referer.slice(0, ctx.header.referer.lastIndexOf('/'));
-          ctx.url = baseUrl + ctx.url;
+          ctx.url = ctx.header.referer + ctx.url;
           try {
             fs.accessSync(path.join(rootDir + ctx.path));
           } catch (err) {
