@@ -5,6 +5,7 @@ const os = require('os');
 const Koa = require('koa');
 const compress = require('koa-compress');
 const serveStatic = require('koa-static');
+const history = require('koa-connect-history-api-fallback');
 const serveList = require('koa-serve-list');
 const chalk = require('chalk');
 const open = require('open');
@@ -23,6 +24,7 @@ class Staticky {
       port,
       openBrowser,
       rootDir,
+      fallback,
       openGizp,
       targetFile,
       openReload,
@@ -33,6 +35,9 @@ class Staticky {
       ctx.set('Access-Control-Allow-Origin', '*');
       await next();
     });
+    if (fallback) {
+      this.app.use(history());
+    }
     // enable compress
     if (openGizp) {
       this.openGizp();

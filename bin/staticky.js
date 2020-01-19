@@ -21,6 +21,7 @@ program
   .option('-p, --port <port>', 'server\'s listen port, 8091 default', convert.port)
   .option('-t, --target <file>', 'which the file open', 'index.html')
   .option('-d, --dir <path>', 'working dir, default process.cwd()', convert.dir)
+  .option('-f, --fallback', 'support single page application')
   .option('-g, --gzip', 'the request accepts gzip encoding')
   .option('--no-reload', 'live reloaded, default opened, watching process.cwd()')
   .option('--no-browser', 'don\'t open browser, default open browser')
@@ -36,6 +37,7 @@ fs.stat(rootDir, (err, stats) => {
       port: program.port || 8091,
       openBrowser: program.browser,
       rootDir: rootDir,
+      fallback: program.fallback,
       openGizp: program.gzip || false,
       targetFile: program.target,
       openReload: program.reload

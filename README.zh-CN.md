@@ -31,6 +31,7 @@ staticky 是一个更好的、更简单的静态文件服务器。你能使用�
 * `-n` or `--no-browser` 是否自动打开浏览器
 * `-t` or `--target` 选择打开哪个文件，默认 `index.html`
 * `-d` or `--dir` 选择工作目录，默认 `process.cwd`
+* `-f` or `--fallback` 支持单页应用
 * `-g` or `--gzip` 是否开启gize压缩
 * `-r` or `--reload` 观察文件或目录的变化，自动刷新。默认选择 `target file`，只有两个选项 `target` 或者 `dir`
 * `-h` or `--help` 打印用法

@@ -31,6 +31,7 @@ Command line parameters:
 * `-n` or `--no-browser` Whether to open browser automatically 
 * `-t` or `--target` Which the file open, defaults to `index.html`
 * `-d` or `--dir` Working directory, defaults to `process.cwd()`
+* `-f` or `--fallback` Support single page Application
 * `-g` or `--gzip` Whether the request accepts gzip encoding
 * `-r` or `--reload` File or directory live reloaded, defauls to `target file` , you can only select `target` or `dir`
 * `-h` or `--help` Output usage information
